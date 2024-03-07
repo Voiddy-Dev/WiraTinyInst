@@ -74,6 +74,8 @@ if (WIN32)
   set (platform_specific_files
        Windows/debugger.h
        Windows/debugger.cpp
+       Windows/comstofuzzer.h
+       Windows/comstofuzzer.cpp
        Windows/winunwind.cpp
        Windows/winunwind.h
   )
@@ -128,6 +130,8 @@ add_library(tinyinst STATIC
   ${platform_specific_files}
   ${cross_platform_files}
 )
+
+target_link_libraries(tinyinst "Ws2_32.lib")
 
 target_include_directories(tinyinst PUBLIC
   ${CMAKE_CURRENT_SOURCE_DIR}
