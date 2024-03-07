@@ -16,8 +16,9 @@ public:
     FuzzerCommunicator();
     ~FuzzerCommunicator();
     int SendDebuggerAttached();
-
+    int SendDebuggerDetached();
 private:
+    int SendCommand(char command);
     int TryConnectToServer();
     int DisconnectFromServer();
 

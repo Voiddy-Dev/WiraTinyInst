@@ -1,41 +1,49 @@
 #include "comstofuzzer.h"
 #include "common.h"
 
-int FuzzerCommunicator::SendDebuggerAttached()
+int FuzzerCommunicator::SendCommand(char command)
 {
     int sleeptime = 100;
     int maxsleeptime = 10000;
     char reply;
-    char command = 'A';
 
     while (1)
     {
+        char reply;
         if (TryConnectToServer())
         {
-            // send an 'A' for attached
             send(sock, &command, 1, 0);
-            printf("Sent 'A' - Debugger is Attached\n");
+            printf("[TINYINST WIRA] Sent command: %c\n", command);
 
             if (!Read(sock, &reply, 1))
             {
                 DisconnectFromServer();
+                return 0;
             }
-            else
+            if (reply == 'K')
             {
-                if (reply == 'K')
-                {
-                    break;
-                }
-                DisconnectFromServer();
+                return 1;
             }
+            DisconnectFromServer();
         }
         Sleep(sleeptime);
         sleeptime *= 2;
         if (sleeptime > maxsleeptime)
-            FATAL("SendDebuggerAttached - Could not connect to server after 10 seconds\n");
+            FATAL("Could not connect to server after 10 seconds\n");
     }
+    return 0;
+}
 
-    return 1;
+int FuzzerCommunicator::SendDebuggerAttached()
+{
+    char command = 'A';
+    return SendCommand(command);
+}
+
+int FuzzerCommunicator::SendDebuggerDetached()
+{
+    char command = 'D';
+    return SendCommand(command);
 }
 
 int Communicator::Read(SOCKET sock, void *buf, size_t size)
@@ -107,7 +115,7 @@ int FuzzerCommunicator::TryConnectToServer()
 
     sock = INVALID_SOCKET;
 
-    printf("Connecting to server.\n");
+    // printf("Connecting to server.\n");
 
     // Create a socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
@@ -127,6 +135,8 @@ int FuzzerCommunicator::TryConnectToServer()
     {
         return 0;
     }
+
+    // printf("\tConnected\n");
 
     return 1;
 }

@@ -2075,12 +2075,17 @@ DebuggerStatus Debugger::Run(int argc, char **argv, uint32_t timeout)
 DebuggerStatus Debugger::Continue(uint32_t timeout)
 {
   if (!child_handle && (dbg_last_status != DEBUGGER_ATTACHED))
+  {
+    fuzzercoms->SendDebuggerDetached();
     return DEBUGGER_PROCESS_EXIT;
+  }
 
   if (loop_mode && (dbg_last_status == DEBUGGER_TARGET_END))
   {
     // saves us a breakpoint
     dbg_last_status = DEBUGGER_TARGET_START;
+    fuzzercoms->SendDebuggerDetached();
+
     return dbg_last_status;
   }
 
@@ -2094,6 +2099,7 @@ DebuggerStatus Debugger::Continue(uint32_t timeout)
     child_thread_handle = NULL;
   }
 
+  fuzzercoms->SendDebuggerDetached();
   return dbg_last_status;
 }
 
