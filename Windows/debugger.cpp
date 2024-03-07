@@ -1749,6 +1749,10 @@ DebuggerStatus Debugger::Kill() {
   return dbg_last_status;
 }
 
+void wira_debugger_is_attached() {
+  printf("wira_debugger_is_attached\n");
+}
+
 // attaches to an active process
 DebuggerStatus Debugger::Attach(unsigned int pid, uint32_t timeout) {
   attach_mode = true;
@@ -1789,6 +1793,8 @@ DebuggerStatus Debugger::Attach(unsigned int pid, uint32_t timeout) {
   }
 
   dbg_last_status = DEBUGGER_ATTACHED;
+
+  wira_debugger_is_attached();
 
   return Continue(timeout);
 }
