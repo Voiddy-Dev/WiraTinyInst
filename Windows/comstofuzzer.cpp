@@ -3,17 +3,18 @@
 
 int FuzzerCommunicator::SendDebuggerAttached()
 {
-    int sleeptime = 1000;
+    int sleeptime = 100;
     int maxsleeptime = 10000;
     char reply;
     char command = 'A';
+
     while (1)
     {
         if (TryConnectToServer())
         {
             // send an 'A' for attached
             send(sock, &command, 1, 0);
-            printf("Sent 'A' for attached\n");
+            printf("Sent 'A' - Debugger is Attached\n");
 
             if (!Read(sock, &reply, 1))
             {
@@ -31,7 +32,7 @@ int FuzzerCommunicator::SendDebuggerAttached()
         Sleep(sleeptime);
         sleeptime *= 2;
         if (sleeptime > maxsleeptime)
-            sleeptime = maxsleeptime;
+            FATAL("SendDebuggerAttached - Could not connect to server after 10 seconds\n");
     }
 
     return 1;
@@ -147,6 +148,8 @@ FuzzerCommunicator::FuzzerCommunicator()
     {
         FATAL("WSAStartup failed");
     }
+
+    printf("Initialized FuzzerCommuniator --> WSAStartup\n");
 }
 
 FuzzerCommunicator::~FuzzerCommunicator()

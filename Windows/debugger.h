@@ -26,6 +26,8 @@ limitations under the License.
 #include "windows.h"
 #include "arch/x86/reg.h"
 
+#include "comstofuzzer.h"
+
 enum CallingConvention {
   CALLCONV_MICROSOFT_X64,
   CALLCONV_THISCALL,
@@ -168,6 +170,8 @@ private:
     unsigned char original_opcode;
   };
   std::list<Breakpoint *> breakpoints;
+
+  FuzzerCommunicator* fuzzercoms;
 
   void StartProcess(char *cmd);
   void GetProcessPlatform();
