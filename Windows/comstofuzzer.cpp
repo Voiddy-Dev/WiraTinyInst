@@ -13,7 +13,7 @@ int FuzzerCommunicator::SendCommand(char command)
         if (TryConnectToServer())
         {
             send(sock, &command, 1, 0);
-            printf("[TINYINST WIRA] Sent command: %c\n", command);
+            // printf("[TINYINST WIRA] Sent command: %c\n", command);
 
             if (!Read(sock, &reply, 1))
             {
@@ -120,8 +120,7 @@ int FuzzerCommunicator::TryConnectToServer()
     // Create a socket
     if ((sock = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
     {
-        printf("Could not create socket\n");
-        return 0;
+        FATAL("Could not create socket\n");
     }
 
     // printf("Socket created.\n");
@@ -145,8 +144,7 @@ int FuzzerCommunicator::DisconnectFromServer()
 {
     if (closesocket(sock) == SOCKET_ERROR)
     {
-        printf("Could not close socket\n");
-        return 0;
+        FATAL("Could not close socket\n");
     }
     return 1;
 }
@@ -159,7 +157,7 @@ FuzzerCommunicator::FuzzerCommunicator()
         FATAL("WSAStartup failed");
     }
 
-    printf("Initialized FuzzerCommuniator --> WSAStartup\n");
+    // printf("Initialized FuzzerCommuniator --> WSAStartup\n");
 }
 
 FuzzerCommunicator::~FuzzerCommunicator()

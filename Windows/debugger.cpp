@@ -2039,12 +2039,12 @@ DebuggerStatus Debugger::Attach(unsigned int pid, uint32_t timeout)
 
   dbg_last_status = DEBUGGER_ATTACHED;
 
-  printf("wira_debugger_is_attached\n");
+  // printf("wira_debugger_is_attached\n");
 
   if (fuzzercoms)
     fuzzercoms->SendDebuggerAttached();
   else
-    printf("fuzzercoms is NULL\n");
+    FATAL("fuzzercoms is NULL\n");
 
   return Continue(timeout);
 }
